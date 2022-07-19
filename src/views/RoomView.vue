@@ -19,15 +19,11 @@
                 <YoutubeVue3 class="iframe" width="100%" height="100%" :autoplay="0" controls="1" ref="youtube"
                     :videoid="videoId" @ended="onEnded" @paused="onPaused" @played="onPlayed" />
             </div>
-            <div class="controller">
-
-            </div>
             <ul class="list-users">
                 <li v-for="user in users" class="user">
-                    <img src="../images/user.avif" class="avatar">
-                    <div class="username">{{ user }}</div>
+                    <img :src="user[1]" class="avatar">
+                    <div class="username">{{ user[0] }}</div>
                 </li>
-
             </ul>
         </div>
     </div>
@@ -50,7 +46,9 @@ export default {
             videoId: 'Lw8TeLS4_IA',
             users: [],
             socketFlag: false,
-            autoplay: 0
+            autoplay: 0,
+            avatar: '',
+            avatars: ["/Watchtogether-clone/src/images/sila.jpg", "/Watchtogether-clone/src/images/van.jpg", "/Watchtogether-clone/src/images/pes.jpg", "/Watchtogether-clone/src/images/gilter.jpg", "/Watchtogether-clone/src/images/daun.jpg"]
         }
     },
     components: {
@@ -60,12 +58,13 @@ export default {
 
     },
     created() {
+        this.avatar = this.avatars[Math.floor(Math.random()*this.avatars.length)]
     },
     mounted() {
         document.addEventListener('beforeunload', this.leaving)
         this.room_id = this.$route.params.room_id
         this.user = 'user' + String(Date.now() % 10000)
-        socket.emit('join_room', {'username': this.user, 'room': this.room_id })
+        socket.emit('join_room', {'username': this.user, 'room': this.room_id, 'avatar': this.avatar})
         socket.on('join_room', (data) => {
             this.users = data['users']
         }),
@@ -175,7 +174,7 @@ export default {
 .list-users {
     display: flex;
     list-style-type: none;
-    margin-top: 0px;
+    margin-top: 2rem;
     background: #1f1d1c;
     height: calc(100% - 707px);
 
@@ -184,7 +183,7 @@ export default {
 .container {
     width: 1250px;
     margin: 0 auto;
-    background: #343230;
+    background: transparent;
     height: 70%;
 }
 

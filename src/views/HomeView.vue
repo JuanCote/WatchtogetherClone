@@ -9,7 +9,13 @@
                 together
             </h1>
         </div>
-        <button v-on:click="RedirectToRoom" id="create_room" class="create-room">Create your room</button>
+        <div class="buttons">
+            <button v-on:click="RedirectToRoom(1)" id="create_room" class="create-room">Room 1</button>
+            <button v-on:click="RedirectToRoom(2)" id="create_roo" class="create-room">Room 2</button>
+            <button v-on:click="RedirectToRoom(3)" id="create_room" class="create-room">Room 3</button>
+            <button v-on:click="RedirectToRoom(4)" id="create_room" class="create-room">Room 4</button>
+            <button v-on:click="RedirectToRoom(5)" id="create_room" class="create-room">Room 5</button>
+        </div>
     </div>
 </div>
 </template>
@@ -27,8 +33,8 @@ export default {
         }
     },
     methods: {
-        RedirectToRoom() {
-            this.id = Date.now()
+        RedirectToRoom(id) {
+            this.id = id
             this.$router.push({ name: 'Rooms', params: { room_id: this.id } })
         },
         TypeText() {
@@ -74,6 +80,12 @@ export default {
     padding: 0;
 }
 
+.buttons{
+    display: flex;
+    gap: 1rem;
+
+}
+
 .main {
     padding-top: 280px;
     height: 1000px;
@@ -105,10 +117,11 @@ export default {
     margin-top: 20px;
     font-weight: bold;
     font-size: 16px;
+    padding: 1rem;
     background: #facd3b;
     border: 0.5px solid black;
     border-radius: 5px;
-    width: 40%;
+    width: 100%;
     height: 50px;
     cursor: pointer;
 }
