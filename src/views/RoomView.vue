@@ -48,7 +48,7 @@ export default {
             socketFlag: false,
             autoplay: 0,
             avatar: '',
-            avatars: ["/Watchtogether-clone/src/images/sila.jpg", "/Watchtogether-clone/src/images/van.jpg", "/Watchtogether-clone/src/images/pes.jpg", "/Watchtogether-clone/src/images/gilter.jpg", "/Watchtogether-clone/src/images/daun.jpg"]
+            avatars: ["/Watchtogether-clone/images/sila.jpg", "/Watchtogether-clone/images/van.jpg", "/Watchtogether-clone/images/pes.jpg", "/Watchtogether-clone/images/gilter.jpg", "/Watchtogether-clone/images/daun.jpg"]
         }
     },
     components: {
