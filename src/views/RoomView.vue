@@ -25,6 +25,12 @@
                     <div class="username">{{ user[0] }}</div>
                 </li>
             </ul>
+            <div v-if="users.length === 0" class="loader">
+                <div class="half-circle-spinner">
+                    <div class="circle circle-1"></div>
+                    <div class="circle circle-2"></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -33,7 +39,7 @@
 <script>
 import { YoutubeVue3 } from 'youtube-vue3'
 import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js"
-const socket = io('https://salty-castle-51319.herokuapp.com/', {transports: ['websocket']})
+const socket = io('https://salty-castle-51319.herokuapp.com/', { transports: ['websocket'] })
 
 export default {
     data() {
@@ -48,7 +54,7 @@ export default {
             socketFlag: false,
             autoplay: 0,
             avatar: '',
-            avatars: ["/Watchtogether-clone/images/sila.jpg", "/Watchtogether-clone/images/van.jpg", "/Watchtogether-clone/images/pes.jpg", "/Watchtogether-clone/images/gilter.jpg", "/Watchtogether-clone/images/daun.jpg"]
+            avatars: ["/Watchtogether-clone/sila.jpg", "/Watchtogether-clone/van.jpg", "/Watchtogether-clone/pes.jpg", "/Watchtogether-clone/gilter.jpg", "/Watchtogether-clone/daun.jpg"]
         }
     },
     components: {
@@ -58,41 +64,42 @@ export default {
 
     },
     created() {
-        this.avatar = this.avatars[Math.floor(Math.random()*this.avatars.length)]
+        this.avatar = this.avatars[Math.floor(Math.random() * this.avatars.length)]
     },
     mounted() {
         document.addEventListener('beforeunload', this.leaving)
         this.room_id = this.$route.params.room_id
         this.user = 'user' + String(Date.now() % 10000)
-        socket.emit('join_room', {'username': this.user, 'room': this.room_id, 'avatar': this.avatar})
+        socket.emit('join_room', { 'username': this.user, 'room': this.room_id, 'avatar': this.avatar })
         socket.on('join_room', (data) => {
             this.users = data['users']
         }),
-        socket.on('play_video', (data) => {
-            if (data['username'] !== this.user) {
-                this.socketFlag = true
-                if (data['action'] === 'play') {
-                    this.$refs.youtube.player.seekTo(data['seek_to'])
-                    this.$refs.youtube.player.playVideo()
+            socket.on('play_video', (data) => {
+                if (data['username'] !== this.user) {
+                    this.socketFlag = true
+                    if (data['action'] === 'play') {
+                        this.$refs.youtube.player.seekTo(data['seek_to'])
+                        this.$refs.youtube.player.playVideo()
+                    }
+                    else {
+                        this.$refs.youtube.player.pauseVideo()
+                        this.$refs.youtube.player.seekTo(data['seek_to'])
+                    }
                 }
-                else {
-                    this.$refs.youtube.player.pauseVideo()
-                    this.$refs.youtube.player.seekTo(data['seek_to'])
-                }
-            }
-        })
+            })
         socket.on('leave_room', (data) => {
             this.users = data['users']
         })
         socket.on('addVideo', (data) => {
-            if(this.user !== data['username']) {
+            if (this.user !== data['username']) {
                 this.videoId = data['url']
             }
         })
     },
     methods: {
         addVideo() {
-            this.videoId = this.input.split('=')[1]
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+            this.videoId = this.input.match(regExp)[2]
             this.input = ''
             socket.emit('add_video', {
                 'username': this.user,
@@ -290,5 +297,53 @@ export default {
 .cross {
     margin: 0 auto;
     height: 13px;
+}
+.loader {
+    width: 60px;
+    position: relative;
+    left: 24px;
+    top: -95px;
+}
+
+.half-circle-spinner,
+.half-circle-spinner * {
+    box-sizing: border-box;
+}
+
+.half-circle-spinner {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    position: relative;
+}
+
+.half-circle-spinner .circle {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    border: calc(60px / 10) solid transparent;
+}
+
+.half-circle-spinner .circle.circle-1 {
+    border-top-color: #ff1d5e;
+    animation: half-circle-spinner-animation 1s infinite;
+}
+
+.half-circle-spinner .circle.circle-2 {
+    border-bottom-color: #ff1d5e;
+    animation: half-circle-spinner-animation 1s infinite alternate;
+}
+
+@keyframes half-circle-spinner-animation {
+    0% {
+        transform: rotate(0deg);
+
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>
