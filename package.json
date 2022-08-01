@@ -1,13 +1,13 @@
 {
   "name": "vue-project",
   "version": "0.0.0",
-  
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 4173"
   },
   "dependencies": {
+    "bootstrap": "^5.2.0",
     "socket.io-client": "^4.5.1",
     "v-video-embed": "^1.0.8",
     "vue": "^3.2.37",

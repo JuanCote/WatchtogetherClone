@@ -1,5 +1,6 @@
 <template>
     <div class="main">
+        <v_modalForm @sendInput="sendUsername" @closeModal="closeModal" v-if="modalActive"></v_modalForm>
         <div class="header">
             <button @click="$router.push({ name: 'Home' })" class="arrow">
                 <img class="arrow-logo" src="../images/arrow.png" alt="back">
@@ -8,7 +9,7 @@
                 <div class='logo-container'>
                     <img class='logo' src="../images/youtube.png" alt="youtube">
                 </div>
-                <input v-model="input" placeholder="Paste a link to a Youtube video" type="text" class="input">
+                <input v-on:keyup.enter="addVideo" v-model="input" placeholder="Paste a link to a Youtube video" type="text" class="input">
                 <div @click="CleanInput" :class="{ 'visibility': input === '' }" class="clean"><img class="cross"
                         src="../images/cross.png" alt="cross"></div>
                 <button @click="addVideo" class="button"><img class="lupa" src="../images/lupa.png" alt=""></button>
@@ -17,12 +18,12 @@
         <div class="container">
             <div class="player">
                 <YoutubeVue3 class="iframe" width="100%" height="100%" :autoplay="0" controls="1" ref="youtube"
-                    :videoid="videoId" @ended="onEnded" @paused="onPaused" @played="onPlayed" />
+                    :videoid="videoId" @paused="onPaused" @played="onPlayed" />
             </div>
             <ul class="list-users">
-                <li v-for="user in users" class="user">
-                    <img :src="user[1]" class="avatar">
-                    <div class="username">{{ user[0] }}</div>
+                <li v-for="username in users" class="user">
+                    <img :src="username[1]" class="avatar">
+                    <div @click="showModal($event)" class="username" v-bind:class="{ active: username[0] == user  }">{{ username[0] }}</div>
                 </li>
             </ul>
             <div v-if="users.length === 0" class="loader">
@@ -40,6 +41,7 @@
 import { YoutubeVue3 } from 'youtube-vue3'
 import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js"
 const socket = io('https://salty-castle-51319.herokuapp.com/', { transports: ['websocket'] })
+import v_modalForm from '../components/modalForm.vue'
 
 export default {
     data() {
@@ -54,11 +56,13 @@ export default {
             socketFlag: false,
             autoplay: 0,
             avatar: '',
-            avatars: ["/Watchtogether-clone/sila.jpg", "/Watchtogether-clone/van.jpg", "/Watchtogether-clone/pes.jpg", "/Watchtogether-clone/gilter.jpg", "/Watchtogether-clone/daun.jpg"]
+            avatars: ["/Watchtogether-clone/sila.jpg", "/Watchtogether-clone/van.jpg", "/Watchtogether-clone/pes.jpg", "/Watchtogether-clone/gilter.jpg", "/Watchtogether-clone/daun.jpg"],
+            modalActive: false,
         }
     },
     components: {
-        YoutubeVue3
+        YoutubeVue3,
+        v_modalForm
     },
     ready() {
 
@@ -94,6 +98,9 @@ export default {
             if (this.user !== data['username']) {
                 this.videoId = data['url']
             }
+        })
+        socket.on('new_list', (data) => {
+            this.users = data
         })
     },
     methods: {
@@ -144,6 +151,21 @@ export default {
 
             this.socketFlag = false
         },
+        showModal(event) {
+            if(event.target.getAttribute('class') === 'username active') {
+                this.modalActive = true
+            }
+        },
+        closeModal() {
+            this.modalActive = false
+        },
+        sendUsername(value) {
+            this.user = value
+            socket.emit('change_username', {
+                'room': this.room_id,
+                'new_username': value
+            }) 
+        }
     },
 }
 </script>
@@ -153,7 +175,10 @@ export default {
     height: 100px;
     width: 100px;
 }
-
+.active {
+    cursor: pointer;
+    text-decoration: underline;
+}
 .controller {
     background: black;
     height: 50px;
@@ -173,6 +198,7 @@ export default {
 
 .username {
     text-align: center;
+    padding-top: 2px;
     margin-top: -5px;
     height: 23px;
     background: limegreen;
@@ -298,6 +324,7 @@ export default {
     margin: 0 auto;
     height: 13px;
 }
+
 .loader {
     width: 60px;
     position: relative;

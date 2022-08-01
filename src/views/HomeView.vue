@@ -88,7 +88,7 @@ export default {
 
 .main {
     padding-top: 280px;
-    height: 1000px;
+    height: 1100px;
     background-image: url(../images/3795806.jpg);
     background-repeat: no-repeat;
     background-position: center center;
