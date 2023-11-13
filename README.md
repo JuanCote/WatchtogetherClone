@@ -1,29 +1,15 @@
-# vue-project
+# WatchtogetherClone
 
-This template should help get you started developing with Vue 3 in Vite.
+"WatchtogetherClone" is a project inspired by Watch2Gether. The project's essence lies in the ability to watch YouTube videos together with other users, with the option to control playback, pause, rewind, and all these actions happening simultaneously for everyone.
+The project architecture follows a "client-server" model, where the client is a Vue-based application, and the server is built with Flask. Two-way communication between them is established using websockets through Socket.IO. To explore the server-side code, please visit the following GitHub page: [WatchtogetherCloneServer](https://github.com/JuanCote/WatchtogetherCloneServer).
 
-## Recommended IDE Setup
+## Getting Started
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+To get this project up and running on your local machine, follow these steps:
 
-## Customize configuration
+1. Clone this repository: `git clone https://github.com/JuanCote/WatchtogetherClone.git`
+2. Install the project's dependencies using npm: npm install
+3. To run the project in development mode, use the following command: npm run dev
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Project Setup
 
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
