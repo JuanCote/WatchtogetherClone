@@ -73,7 +73,7 @@ import { YoutubeVue3 } from "youtube-vue3";
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
 import v_modalForm from "../../components/modalForm.vue";
 
-const socket = io("http://w2g.localhost:5000");
+const socket = io("https://w2g.bondarenkonikita.pp.ua/");
 
 export default {
   data() {
